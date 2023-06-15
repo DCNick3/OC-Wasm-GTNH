@@ -13,6 +13,8 @@ import ca.chead.ocwasm.syscall.Syscalls;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+
 import li.cil.oc.api.machine.ExecutionResult;
 import li.cil.oc.api.machine.Machine;
 import net.minecraft.nbt.NBTTagCompound;
@@ -113,7 +115,10 @@ public final class InstantiateFromSnapshot extends State implements ModuleConstr
 		// just loaded from disk is still accurate. Reuse it. However we do
 		// need to copy the existing NBT data from the old root to the new
 		// root.
-		root.getKeySet().stream().filter(i -> i.startsWith("ca.chead.ocwasm.")).forEach(i -> saveRoot.setTag(i, root.getTag(i)));
+        @SuppressWarnings("unchecked") // it's just missing from the mappings
+        Set<String> keySet = root.func_150296_c();
+
+		keySet.stream().filter(i -> i.startsWith("ca.chead.ocwasm.")).forEach(i -> saveRoot.setTag(i, root.getTag(i)));
 		return new SnapshotOrGeneration(snapshot.generation);
 	}
 

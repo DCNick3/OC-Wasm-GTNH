@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.Future;
 import li.cil.oc.api.Driver;
-import li.cil.oc.api.driver.DriverItem;
+import li.cil.oc.api.driver.Item;
 import li.cil.oc.api.driver.item.Memory;
 import li.cil.oc.api.machine.Architecture;
 import li.cil.oc.api.machine.ExecutionResult;
@@ -96,7 +96,7 @@ public final class CPU implements Architecture {
 	public boolean recomputeMemory(final Iterable<ItemStack> components) {
 		int total = 0;
 		for(final ItemStack i : components) {
-			final DriverItem driver = Driver.driverFor(i);
+			final Item driver = Driver.driverFor(i);
 			if(driver instanceof Memory) {
 				final Memory mem = (Memory) driver;
 				total += mem.amount(i);

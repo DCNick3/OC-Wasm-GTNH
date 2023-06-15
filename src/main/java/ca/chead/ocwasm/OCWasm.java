@@ -1,5 +1,6 @@
 package ca.chead.ocwasm;
 
+import java.io.File;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
@@ -9,22 +10,23 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import net.minecraftforge.common.config.Config;
-import net.minecraftforge.common.config.ConfigManager;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
+import net.minecraftforge.common.MinecraftForge;
+import cpw.mods.fml.client.event.ConfigChangedEvent;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppedEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.Logger;
 
 /**
  * The mod entry point.
  */
 @Mod(modid = OCWasm.MODID, name = OCWasm.NAME, version = OCWasm.VERSION, useMetadata = true, acceptableRemoteVersions = "*")
-@Mod.EventBusSubscriber
+//@Mod.EventBusSubscriber
 // OCWasm is instantiated by FML; it is not an uninstantiated utility class.
 // However, CPU is instantiated by OpenComputers and isn’t passed any
 // constructor parameters, so it can’t get hold of a reference to the OCWasm
@@ -41,22 +43,22 @@ public final class OCWasm {
 	/**
 	 * Configuration for the mod.
 	 */
-	@Config(modid = MODID)
+//	@Config(modid = MODID)
 	public static class OCWasmConfig {
 		/**
 		 * Whether the {@link ca.chead.ocwasm.syscall.Computer#debug} method
 		 * writes to the Minecraft log.
 		 */
-		@Config.Comment({"Whether the computer.debug syscall writes to the Minecraft debug log (otherwise, debug output is discarded)."})
-		@Config.Name("Enable Debug")
+//		@Config.Comment({"Whether the computer.debug syscall writes to the Minecraft debug log (otherwise, debug output is discarded)."})
+//		@Config.Name("Enable Debug")
 		public static boolean enableDebug = false;
 
 		/**
 		 * Whether a failed syscall writes an exception stack trace to the
 		 * Minecraft log.
 		 */
-		@Config.Comment({"Whether (most) failed syscalls write exception stack traces to the Minecraft debug log."})
-		@Config.Name("Enable Syscall Exception Trace Dump")
+//		@Config.Comment({"Whether (most) failed syscalls write exception stack traces to the Minecraft debug log."})
+//		@Config.Name("Enable Syscall Exception Trace Dump")
 		public static boolean enableSyscallExceptionTraceDump = false;
 	}
 
@@ -135,6 +137,8 @@ public final class OCWasm {
 	 */
 	public OCWasm() {
 		super();
+
+        MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	/**
@@ -202,6 +206,9 @@ public final class OCWasm {
 		}
 	}
 
+    static void reloadConfig(File file) {
+    }
+
 	/**
 	 * Handles the FML pre-initialization event.
 	 *
@@ -211,6 +218,15 @@ public final class OCWasm {
 	public static void preInit(final FMLPreInitializationEvent event) {
 		logger = event.getModLog();
 		SyntheticFuncBuilderPatcher.patch();
+
+        Configuration config = new Configuration(event.getSuggestedConfigurationFile());
+
+        config.load();
+
+        OCWasmConfig.enableDebug = config.getBoolean("enableDebug", Configuration.CATEGORY_GENERAL, OCWasmConfig.enableDebug, "Whether the computer.debug syscall writes to the Minecraft debug log (otherwise, debug output is discarded).");
+        OCWasmConfig.enableSyscallExceptionTraceDump = config.getBoolean("enableSyscallExceptionTraceDump", Configuration.CATEGORY_GENERAL, OCWasmConfig.enableSyscallExceptionTraceDump, "Whether (most) failed syscalls write exception stack traces to the Minecraft debug log.");
+
+        config.save();
 	}
 
 	/**
@@ -288,9 +304,7 @@ public final class OCWasm {
 	 */
 	@SubscribeEvent
 	public static void onConfigChanged(final ConfigChangedEvent.OnConfigChangedEvent event) {
-		if(event.getModID().equals(MODID)) {
-			ConfigManager.sync(MODID, Config.Type.INSTANCE);
-		}
+		// похуй
 	}
 
 	/**

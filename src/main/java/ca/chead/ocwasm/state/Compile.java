@@ -9,6 +9,8 @@ import ca.chead.ocwasm.SnapshotOrGeneration;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalLong;
+import java.util.Set;
+
 import li.cil.oc.api.machine.ExecutionResult;
 import li.cil.oc.api.machine.Machine;
 import net.minecraft.nbt.NBTTagCompound;
@@ -89,7 +91,10 @@ public final class Compile extends State {
 			// snapshot that we just loaded from disk is still accurate. Reuse
 			// it. However we do need to copy the existing NBT data from the
 			// old root to the new root.
-			root.getKeySet().stream().filter(i -> i.startsWith("ca.chead.ocwasm.")).forEach(i -> saveRoot.setTag(i, root.getTag(i)));
+			@SuppressWarnings("unchecked") // it's just missing from the mappings
+            Set<String> keySet = root.func_150296_c();
+
+            keySet.stream().filter(i -> i.startsWith("ca.chead.ocwasm.")).forEach(i -> saveRoot.setTag(i, root.getTag(i)));
 			return new SnapshotOrGeneration(snapshot.generation);
 		} else {
 			// This is a fresh boot, so we can get away with not saving

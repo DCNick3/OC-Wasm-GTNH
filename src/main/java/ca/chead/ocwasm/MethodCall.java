@@ -262,8 +262,9 @@ public abstract class MethodCall implements AutoCloseable {
 	 * @return The new {@code MethodCall} object.
 	 */
 	public static MethodCall load(final NBTTagCompound root, final ReferencedValue[] valuePool, final DescriptorTable descriptors) {
-		final byte targetTag = root.getTagId(NBT_TARGET);
-		final byte methodTag = root.getTagId(NBT_METHOD);
+
+		final byte targetTag = root.func_150299_b(NBT_TARGET);
+		final byte methodTag = root.func_150299_b(NBT_METHOD);
 		if(targetTag == Constants.NBT.TAG_STRING && methodTag == Constants.NBT.TAG_STRING) {
 			// Target and method are both strings → this is a component method
 			// call.
