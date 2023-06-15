@@ -36,12 +36,22 @@
 dependencies {
     implementation(group: 'li.cil.oc', name: 'OpenComputers', version: opencomputersVersion, classifier: 'api')
     implementation(group: 'org.scala-lang', name: 'scala-library', version: '2.+');
-    implementation(group: 'com.github.cretz.asmble', name: 'asmble-compiler', version: asmbleVersion)
 
-    shadowImplementation(group: 'com.github.cretz.asmble', name: 'asmble-compiler', version: asmbleVersion)
+    implementation(group: "org.jetbrains.kotlin", name: "kotlin-reflect", version: '1.8.0')
+
+//    implementation(group: 'com.github.cretz.asmble', name: 'asmble-compiler', version: asmbleVersion)
+    implementation(group: 'org.ow2.asm', name: 'asm-analysis', version: '9.1')
+    implementation(group: 'org.ow2.asm', name: 'asm-commons', version: '9.1')
+    implementation(group: 'org.ow2.asm', name: 'asm-tree', version: '9.1')
+    implementation(group: 'org.ow2.asm', name: 'asm-util', version: '9.1')
+    implementation(group: 'org.ow2.asm', name: 'asm', version: '9.1')
+    implementation(group: 'co.nstant.in', name: 'cbor', version: '0.9')
+
+//    shadowImplementation(group: 'com.github.cretz.asmble', name: 'asmble-compiler', version: asmbleVersion)
     shadowImplementation(group: 'org.ow2.asm', name: 'asm-analysis', version: '9.1')
     shadowImplementation(group: 'org.ow2.asm', name: 'asm-commons', version: '9.1')
     shadowImplementation(group: 'org.ow2.asm', name: 'asm-tree', version: '9.1')
     shadowImplementation(group: 'org.ow2.asm', name: 'asm-util', version: '9.1')
+    shadowImplementation(group: 'org.ow2.asm', name: 'asm', version: '9.1')
     shadowImplementation(group: 'co.nstant.in', name: 'cbor', version: '0.9')
 }
